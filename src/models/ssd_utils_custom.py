@@ -16,12 +16,12 @@ def add_ssd_modules(output_tensors, num_classes, num_priors,
                     with_batch_norm=True):
 
     classification_layers, regression_layers = [], []
-    print("num_priors", num_priors)
-    print("num_classes", num_classes)
+    # print("num_priors", num_priors)
+    # print("num_classes", num_classes)
     for layer_arg, base_layer in enumerate(output_tensors):
 
         str_arg = str(layer_arg)
-        print("str_arg", str_arg)
+        # print("str_arg", str_arg)
         # classification leaf
         class_name = 'classification_leaf_' + str(layer_arg)
         class_leaf = Conv2D(num_priors[layer_arg] * num_classes, (3, 3),
@@ -30,7 +30,7 @@ def add_ssd_modules(output_tensors, num_classes, num_priors,
             class_leaf = BatchNormalization(
                     name='batch_norm_ssd_3_' + str_arg)(class_leaf)
 
-        class_leaf = Flatten(name='flatten_ssd_1_' + str_arg)(class_leaf)
+        class_leaf = Flatten(name='classification_flatten_ssd_1_' + str_arg)(class_leaf)
         classification_layers.append(class_leaf)
 
         # regression leaf
@@ -42,17 +42,17 @@ def add_ssd_modules(output_tensors, num_classes, num_priors,
                     name='batch_norm_ssd_4_' + str_arg)(regress_leaf)
 
         regress_leaf = Flatten(
-                name='batch_norm_ssd_5_' + str_arg)(regress_leaf)
+                name='regression_flatten_ssd_1_' + str_arg)(regress_leaf)
         regression_layers.append(regress_leaf)
 
 
-    print("classification_layers")
-    for c in classification_layers:
-        print(c)
+    # print("classification_layers")
+    # for c in classification_layers:
+    #     print(c)
         
-    print("regression_layers")
-    for r in regression_layers:
-        print(r)
+    # print("regression_layers")
+    # for r in regression_layers:
+    #     print(r)
 
     classifications = concatenate(classification_layers, axis=1)
     regressions = concatenate(regression_layers, axis=1)
